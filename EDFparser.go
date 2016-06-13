@@ -31,6 +31,7 @@ type HeaderRecord struct {
 	Prefiltering []string
 }
 
+// Reads header record from source file and write it into the structure
 func (header *HeaderRecord) ReadHeader(source *os.File) {
 	if !(bytes.Equal(bytes.TrimSpace(readBytes(source, 8, 0, 0)), []byte{48})) {
 		log.Fatal("File format is not valid.", readBytes(source, 8, 0, 0))
@@ -62,6 +63,7 @@ func (header *HeaderRecord) ReadHeader(source *os.File) {
 	}
 }
 
+// Converts header structure to .json file
 func (header *HeaderRecord) HeaderToJSON() {
 	jsonHeader, _ := json.MarshalIndent(header, "", "    ")
 	result, err := os.Create("header_" + header.StartDate + "_" + header.StartTime + ".json")
@@ -72,6 +74,7 @@ func (header *HeaderRecord) HeaderToJSON() {
 	result.Write(jsonHeader)
 }
 
+// Converts record data from source file to .csv file
 func (header *HeaderRecord) DataToCSV(source *os.File, showLabels *bool) {
 	if _, err := source.Seek(int64(header.NumOfBytes), 0); err != nil {
 		log.Fatal("Seeking failed: ", err)
@@ -123,6 +126,7 @@ func (header *HeaderRecord) DataToCSV(source *os.File, showLabels *bool) {
 
 }
 
+//Read numToRead bytes from source file with some offset (More about Seek func: https://golang.org/pkg/os/#File.Seek)
 func readBytes(source *os.File, numToRead int, seekOffset int64, seekWhence int) []byte {
 	if _, err := source.Seek(seekOffset, seekWhence); err != nil {
 		log.Fatal("Seeking failed: ", err)
@@ -132,20 +136,11 @@ func readBytes(source *os.File, numToRead int, seekOffset int64, seekWhence int)
 	if _, err := source.Read(bytesSlice); err != nil {
 		log.Fatal("Reading from file failed: ", err)
 	}
-	/*	for i := range bytes {
-			if bytes[i]
-		}
-		// Remove spaces (ASCII code: 0x20) after words
-		for i := numToRead - 1; i >= 0; i-- {
-			if bytes[i] != 32 {
-				return bytes[:i+1]
-			}
-		}*/
 	return bytesSlice
 }
 
 func main() {
-	fPath := flag.String("f", "source.edf", "Path to source edf/edf+ file.")
+	fPath := flag.String("f", "source.edf", "Path to source edf/edf+ file")
 	whatToRecord := flag.Int("r", 2, "Save only header record - 0, only data record - 1, both - 2")
 	showLabels := flag.Bool("l", true, "Data record without labels - false")
 	flag.Parse()
