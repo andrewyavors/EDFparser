@@ -4,7 +4,7 @@ _____
 ###Using:
 **Command-line (for Windows):** `edfparser.exe -f "[Path to source edf file]" -r [Save only header record - 0, only data record - 1, both - 2] -l [Data record without labels - false]` <br />
 
-**More info:** edfparser.exe -h
+**More info:** `edfparser.exe -h`
 
 Or you can build EDFparser on your system:
 `$ go build edfparser.go`
