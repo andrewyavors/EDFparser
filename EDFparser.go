@@ -24,10 +24,10 @@ type HeaderRecord struct {
 	Label        []string `json:"Labels"`     // Label of each signal
 	TrType       []string `json:"Transducer"` // Transducer type
 	PhDim        []string // Physical dimension
-	PhMin        []int    // Physical minimum
-	PhMax        []int    // Physical maximum
-	DigMin       []int    // Digital minimum
-	DigMax       []int    // Digital maximum
+	PhMin        []string // Physical minimum
+	PhMax        []string // Physical maximum
+	DigMin       []string // Digital minimum
+	DigMax       []string // Digital maximum
 	Prefiltering []string
 }
 
@@ -49,16 +49,12 @@ func (header *HeaderRecord) ReadHeader(source *os.File) {
 		header.Label = append(header.Label, string(bytes.TrimSpace(readBytes(source, 16, int64(256+ns*16), 0))))
 		header.TrType = append(header.TrType, string(bytes.TrimSpace(readBytes(source, 80, int64(256+header.NumOfSignals*16+ns*80), 0))))
 		header.PhDim = append(header.PhDim, string(bytes.TrimSpace(readBytes(source, 8, int64(256+header.NumOfSignals*96+ns*8), 0))))
-		tmp, _ := strconv.Atoi(string(bytes.TrimSpace(readBytes(source, 8, int64(256+header.NumOfSignals*104+ns*8), 0))))
-		header.PhMin = append(header.PhMin, tmp)
-		tmp, _ = strconv.Atoi(string(bytes.TrimSpace(readBytes(source, 8, int64(256+header.NumOfSignals*112+ns*8), 0))))
-		header.PhMax = append(header.PhMax, tmp)
-		tmp, _ = strconv.Atoi(string(bytes.TrimSpace(readBytes(source, 8, int64(256+header.NumOfSignals*120+ns*8), 0))))
-		header.DigMin = append(header.DigMin, tmp)
-		tmp, _ = strconv.Atoi(string(bytes.TrimSpace(readBytes(source, 8, int64(256+header.NumOfSignals*128+ns*8), 0))))
-		header.DigMax = append(header.DigMax, tmp)
+		header.PhMin = append(header.PhMin, string(bytes.TrimSpace(readBytes(source, 8, int64(256+header.NumOfSignals*104+ns*8), 0))))
+		header.PhMax = append(header.PhMax, string(bytes.TrimSpace(readBytes(source, 8, int64(256+header.NumOfSignals*112+ns*8), 0))))
+		header.DigMin = append(header.DigMin, string(bytes.TrimSpace(readBytes(source, 8, int64(256+header.NumOfSignals*120+ns*8), 0))))
+		header.DigMax = append(header.DigMax, string(bytes.TrimSpace(readBytes(source, 8, int64(256+header.NumOfSignals*128+ns*8), 0))))
 		header.Prefiltering = append(header.Prefiltering, string(bytes.TrimSpace(readBytes(source, 80, int64(256+header.NumOfSignals*136+ns*80), 0))))
-		tmp, _ = strconv.Atoi(string(bytes.TrimSpace(readBytes(source, 8, int64(256+header.NumOfSignals*216+ns*8), 0))))
+		tmp, _ := strconv.Atoi(string(bytes.TrimSpace(readBytes(source, 8, int64(256+header.NumOfSignals*216+ns*8), 0))))
 		header.NumOfSamples = append(header.NumOfSamples, tmp)
 	}
 }
